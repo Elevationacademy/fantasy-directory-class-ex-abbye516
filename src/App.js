@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import Home from './components/Home';
+import About from './components/About';
+import Fentities from './components/Fentities';
+import Fentity from './components/Fentity';
 
 class App extends Component {
   constructor() {
@@ -7,7 +12,7 @@ class App extends Component {
     this.state = {
       wizards: [
         { name: "Merlin", power: "Wisdom", other: "Helped King Arthur", imgUrl: "https://tinyurl.com/merlin-image" },
-        { name: "Morgana Le Fay", power: "Forces of Nature", other: "Trapped Merlin in a cave for eternity", imgUrl: "https://tinyurl.com/morgana-image" },
+        { name: "Morgana Le Fay", power: "Forces of Nature", other: <span>Trapped <Link to="/directory/wizards/Merlin">Merlin</Link> in a cave for eternity</span>, imgUrl: "https://tinyurl.com/morgana-image" },
         { name: "Gandalf", power: "Plot Convenience", other: "Once broke a bridge", imgUrl: "https://tinyurl.com/gandalf-img" }
       ],
       bestiary: [
@@ -17,19 +22,27 @@ class App extends Component {
       ]
     }
   }
-  
+
   render() {
     const state = this.state
     return (
-      <div className="App">
-        <div id="home-background"></div>
-        <div id="main-links">
-          {/* Main Links */}
-        </div>
-        {/* Routes go here v */}
+      <Router>
+        <div className="App">
+          <div id="home-background">
+            <Route path="/" exact component={Home} />
+            <Route path="/about" exact render={() => <About items={Object.keys(state)} />} />
 
-        {/* Routes go here ^ */}
-      </div>
+          </div>
+          <div id="main-links">
+            {<Link to="/">Home</Link>}
+            {<Link to="/about">About</Link>}
+          </div>
+          {/* Routes go here v */}
+          <Route path="/directory/:fentities" exact render={({ match }) => <Fentities match={match} state={this.state} />} />
+          <Route path="/directory/:fentities/:name" exact render={({ match }) => <Fentity match={match} state={this.state} />} />
+          {/* Routes go here ^ */}
+        </div>
+      </Router>
     );
   }
 }
